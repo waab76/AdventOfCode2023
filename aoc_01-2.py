@@ -10,31 +10,14 @@ value_sum = 0
 
 for line in lines:
     first_digit = ''
-    first_digit_position = len(line) + 1
     last_digit = ''
-    last_digit_position = 0
-    
-    for digit in digits:
-        digit_position = line.find(digit)
-        if digit_position >= 0:
-            # print('Found {} at position {}'.format(digit_values[digit], digit_position))
-            if digit_position < first_digit_position:
-                first_digit = digit_values[digit]
-                first_digit_position = digit_position
-            if digit_position > last_digit_position:
+    for i in range(len(line)):
+        for digit in digits:
+            if line[i:].startswith(digit):
+                if '' == first_digit:
+                    first_digit = digit_values[digit]
                 last_digit = digit_values[digit]
-                last_digit_position = digit_position
-        digit_position = line.rfind(digit)
-        if digit_position >= 0:
-            # print('Found {} at position {}'.format(digit_values[digit], digit_position))
-            if digit_position < first_digit_position:
-                first_digit = digit_values[digit]
-                first_digit_position = digit_position
-            if digit_position > last_digit_position:
-                last_digit = digit_values[digit]
-                last_digit_position = digit_position
     line_value = '{}{}'.format(first_digit, last_digit)
-    # print(line_value)
     value_sum += int(line_value)
 
 print(value_sum)
