@@ -12,20 +12,18 @@ current_nodes = []
 for node in nodes:
     if 'A' == node[2]:
         current_nodes.append(node)
-print('Starting nodes {}'.format(current_nodes))
 step = 0
 while len(current_nodes) > 0:
-    # print('{} nodes going {}'.format(len(current_nodes), directions[step]))
     next_nodes = []
     for node in current_nodes:
-        next_nodes.append(nodes[node][directions[step]])
+        next_nodes.append(nodes[node][directions[step%len(directions)]])
     z_count = 0
     for node in next_nodes:
-        if 'Z' in node[2]:
+        if 'Z' == node[2]:
             z_count += 1
     if z_count < len(current_nodes):
         current_nodes = next_nodes
-        step = (step + 1) % len(directions)
+        step += 1
     else:
         current_nodes = []
 
