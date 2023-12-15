@@ -17,12 +17,15 @@ def count_arrangements(condition, groups) -> int:
         return count_arrangements(condition[1:], groups)
     elif '#' == condition[0]:
         # Must try to consume the first group or return 0
-        if len(condition) >= curr_group and sum([1 if condition[i] in '?#' else 0 for i in range(curr_group)]) == curr_group:
-            if len(new_groups) > 0 and len(condition) > curr_group and condition[curr_group] == '#':
-                return 0
-            return count_arrangements(condition[curr_group:], new_groups)
+        if len(condition) < curr_group:
+            return 0
+        elif len(condition) == curr_group:
+            return 0 if '.' in condition else count_arrangements('', new_groups)
         else:
-            return count_arrangements(condition[1:], groups)
+            if '.' in condition[0:curr_group] or '#' == condition[curr_group]:
+                return 0
+            else:
+                return count_arrangements(condition[curr_group + 1:], new_groups)
     else:
         return count_arrangements(condition[1:], groups) + count_arrangements('#' + condition[1:], groups)
 
@@ -33,5 +36,4 @@ for line in lines:
     groups = line.strip().split()[1]
     possible_arrangements += count_arrangements(condition, groups)
 
-# 33803 is too high, I'm over counting, 27480 is wrong
 print(possible_arrangements)
