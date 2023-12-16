@@ -27,7 +27,7 @@ state_cache = []
 for line in lines:
     platform.append(line.strip())
 
-current_state = '\n'.join(platform)
+current_state = platform
 
 while current_state not in state_cache:
     state_cache.append(current_state)
@@ -38,29 +38,18 @@ while current_state not in state_cache:
             platform[row] = roll_left(platform[row])
         platform = rotate_right(platform)
     platform = rotate_right(platform)
-    current_state = '\n'.join(platform)
+    current_state = platform
     
 cycle_start = state_cache.index(current_state)
 cycle_period = len(state_cache) - cycle_start
 
-for i in range(3 * cycle_period + 2):
-    state_cache.append(current_state)
-    
-    platform = rotate_left(platform)
-    for cycle_step in range(4):
-        for row in range(len(platform)):
-            platform[row] = roll_left(platform[row])
-        platform = rotate_right(platform)
-    platform = rotate_right(platform)
-    current_state = '\n'.join(platform)
-
-print(state_cache[cycle_start] == state_cache[cycle_start + cycle_period])
-print(state_cache[cycle_start] == state_cache[cycle_start + cycle_period + cycle_period])
+print('Cycle starts at {}'.format(cycle_start))
+print('Cycle repeats at {} and {}'.format(cycle_start + cycle_period, cycle_start + cycle_period + cycle_period))
 
 desired_cycles = 1000000000
-required_cycles = cycle_start + desired_cycles % cycle_period
+required_cycles = cycle_start  + (desired_cycles - cycle_start) % cycle_period
 
-platform = state_cache[required_cycles+1]
+platform = state_cache[required_cycles]
 
 load = 0
 for row in range(len(platform)):
@@ -68,5 +57,4 @@ for row in range(len(platform)):
         if 'O' == platform[row][col]:
             load += len(platform) - row
 
-# 11256488 is too high
 print(load)
