@@ -1,42 +1,39 @@
 input = open('aoc_13.txt', 'r')
-lines = input.readlines()
+lines = [line.strip() for line in input.readlines()]
 
-def find_symmetry(puzzle) -> int:
-    mismatches = [0 for i in range(len(puzzle) - 1)]
-    
-    for row in range(len(puzzle) - 1):
-        delta = 0
-        while row - delta >= 0 and row + 1 + delta < len(puzzle):
-            mismatches[row] += sum([0 if puzzle[row - delta][i] == puzzle[row+1+delta][i] else 1 for i in range(len(puzzle[row]))])
-            delta += 1
-    smudge_rows = 0
-    try:
-        smudge_rows = mismatches.index(1) + 1
-        print(mismatches)
-        print(smudge_rows)
-    except:
-        pass
-    return smudge_rows
+def difference(l: str, r: str) -> int:
+    return sum(a != b for a,b in zip(l,r))
+
+def find_symmetry(puzzle: list, smudges: bool) -> int:
+    for i in range(1, len(puzzle)):
+        if sum(difference(l,r) for l,r in zip(reversed(puzzle[:i]), puzzle[i:])) == 1:
+            return i
+    return 0
 
 total = 0
 
 i = 0
 while i < len(lines):
     puzzle = []
-    puzzle_val = 0
-    while i < len(lines) and len(lines[i].strip()) > 0:
-        puzzle.append(lines[i].strip())
+    while i < len(lines) and len(lines[i]) > 0:
+        puzzle.append(lines[i])
         i += 1
     
-    puzzle_val = 100 * find_symmetry(puzzle)
+    rows_above_smudge = find_symmetry(puzzle, True)
     
-    if puzzle_val == 0:
-        # print('No symmetry found, rotating')
-        new_puz = [[puzzle[col][row] for col in range(len(puzzle)-1, -1, -1)] for row in range(len(puzzle[0]))]
-        puzzle_val = find_symmetry(new_puz)
+    puzzle = list(zip(*puzzle))
     
-    total += puzzle_val
+    cols_left_smudge = find_symmetry(puzzle, True)
+    
+    if cols_left_smudge > 0 and rows_above_smudge > 0:
+        print('Uh oh row {}'.format(i))
+        quit()
+    
+    if cols_left_smudge > 0:
+        total += cols_left_smudge
+    if rows_above_smudge > 0:
+        total += 100 * rows_above_smudge
     i += 1
-# 35849 is to low
+    
 print(total)
     
